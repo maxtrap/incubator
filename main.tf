@@ -1,0 +1,156 @@
+# Set up
+
+terraform {
+  required_providers {
+    incus = {
+      source = "lxc/incus"
+      version = "1.2.0"
+    }
+  }
+}
+
+provider "incus" {
+}
+
+
+# Networking
+
+resource "incus_network" "net1" {
+	name = "labnet1"
+	config = {
+		"ipv4.address" = "none"
+		"ipv6.address" = "none"
+	}
+}
+
+resource "incus_network" "net2" {
+	name = "labnet2"
+	config = {
+		"ipv4.address" = "none"
+		"ipv6.address" = "none"
+	}
+}
+
+
+# VM Image Declaration
+
+resource "incus_image" "ubuntu" {
+  # NOTE: incus's offical ubuntu cloud image gets stuck in a boot loop
+  # https://discuss.linuxcontainers.org/t/loud-vms-stuck-in-continuous-boot-loop/27287
+  # Restore this code once the problem is resolved
+  #
+	# source_image = {
+	# 	remote = "images"
+	# 	name = "ubuntu/26.04/cloud"
+	# 	type = "virtual-machine"
+	# }
+
+  # HACK: The temporary workaround
+  source_file = {
+    data_path = "${path.module}/images/ubuntu-26.04-server-cloudimg-amd64.img"
+    metadata_path = "${path.module}/images/ubuntu-26.04-server-cloudimg-amd64-lxd.tar.xz"
+  }
+}
+
+
+# Profile
+
+resource "incus_profile" "lab" {
+  name = "lab"
+
+  device {
+    type = "disk"
+    name = "root"
+
+    properties = {
+      pool = "default"
+      path = "/"
+    }
+  }
+}
+
+
+# VM Instances
+
+resource "incus_instance" "router" {
+	name = "router"
+	image = incus_image.ubuntu.fingerprint
+	type = "virtual-machine"
+  profiles = [incus_profile.lab.name]
+
+	device {
+		name = "uplink"
+		type = "nic"
+		properties = {
+			network = "incusbr0"
+			hwaddr = "02:00:00:00:00:01"
+		}
+	}
+
+	device {
+		name = "lan-server"
+		type = "nic"
+
+		properties = {
+			network = incus_network.net1.name
+			hwaddr = "02:00:00:00:00:02"
+		}
+	}
+
+	device {
+		name = "lan-client"
+		type = "nic"
+
+		properties = {
+			network = incus_network.net2.name
+			hwaddr = "02:00:00:00:00:03"
+		}
+	}
+
+	config = {
+		"cloud-init.network-config" = file("${path.module}/router/network.yaml")
+		"cloud-init.user-data" = file("${path.module}/router/user-data.yaml")
+	}
+}
+
+resource "incus_instance" "server" {
+	name = "server"
+	image = incus_image.ubuntu.fingerprint
+	type = "virtual-machine"
+  profiles = [incus_profile.lab.name]
+
+	device {
+		name = "lan"
+		type = "nic"
+
+		properties = {
+			network = incus_network.net1.name
+			hwaddr = "02:00:00:00:01:01"
+		}
+	}
+
+	config = {
+		"cloud-init.network-config" = file("${path.module}/server/network.yaml")
+	}
+}
+
+resource "incus_instance" "client" {
+	name = "client"
+	image = incus_image.ubuntu.fingerprint
+	type = "virtual-machine"
+  profiles = [incus_profile.lab.name]
+
+	device {
+		name = "lan"
+		type = "nic"
+
+		properties = {
+			network = incus_network.net2.name
+			hwaddr = "02:00:00:00:02:01"
+		}
+	}
+
+	config = {
+		"cloud-init.network-config" = file("${path.module}/client/network.yaml")
+	}
+}

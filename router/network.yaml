@@ -1,0 +1,19 @@
+network:
+  version: 2
+  ethernets:
+    uplink:
+      match:
+        macaddress: "02:00:00:00:00:01"
+      # TODO: Try this once incus fixes cloud vms
+      # set-name: uplink
+      dhcp4: true
+    lan-server:
+      match:
+        macaddress: "02:00:00:00:00:02"
+      set-name: lan-server
+      addresses: [192.168.101.1/24]
+    lan-client:
+      match:
+        macaddress: "02:00:00:00:00:03"
+      set-name: lan-client
+      addresses: [192.168.102.1/24]
