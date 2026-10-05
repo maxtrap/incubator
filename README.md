@@ -1,4 +1,4 @@
-# Genie Lab Incus Edition
+# Incubator
 
 This is a linux-specific setup for the lab
 using [Incus](https://linuxcontainers.org/incus/) as the VM manager
