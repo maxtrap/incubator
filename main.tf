@@ -9,11 +9,16 @@ terraform {
   }
 }
 
+variable "name" {
+	type = string
+	description = "Lab name, used as a prefix for everything the lab creates"
+}
+
 
 # Networking
 
 resource "incus_network" "net1" {
-	name = "labnet1"
+	name = "${var.name}-labnet1"
 	config = {
 		"ipv4.address" = "none"
 		"ipv6.address" = "none"
@@ -21,7 +26,7 @@ resource "incus_network" "net1" {
 }
 
 resource "incus_network" "net2" {
-	name = "labnet2"
+	name = "${var.name}-labnet2"
 	config = {
 		"ipv4.address" = "none"
 		"ipv6.address" = "none"
@@ -53,7 +58,7 @@ resource "incus_image" "ubuntu" {
 # Profile
 
 resource "incus_profile" "lab" {
-  name = "lab"
+  name = "${var.name}-lab"
 
   device {
     type = "disk"
@@ -70,7 +75,7 @@ resource "incus_profile" "lab" {
 # VM Instances
 
 resource "incus_instance" "router" {
-	name = "router"
+	name = "${var.name}-router"
 	image = incus_image.ubuntu.fingerprint
 	type = "virtual-machine"
   profiles = [incus_profile.lab.name]
@@ -112,7 +117,7 @@ resource "incus_instance" "router" {
 }
 
 resource "incus_instance" "server" {
-	name = "server"
+	name = "${var.name}-server"
 	image = incus_image.ubuntu.fingerprint
 	type = "virtual-machine"
   profiles = [incus_profile.lab.name]
@@ -133,7 +138,7 @@ resource "incus_instance" "server" {
 }
 
 resource "incus_instance" "client" {
-	name = "client"
+	name = "${var.name}-client"
 	image = incus_image.ubuntu.fingerprint
 	type = "virtual-machine"
   profiles = [incus_profile.lab.name]
