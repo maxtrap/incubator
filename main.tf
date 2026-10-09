@@ -9,9 +9,6 @@ terraform {
   }
 }
 
-provider "incus" {
-}
-
 
 # Networking
 
