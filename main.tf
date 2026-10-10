@@ -24,6 +24,12 @@ variable "image" {
   default = "ubuntu-26.04-lab"
 }
 
+variable "server_config" {
+  type = map(string)
+  description = "Optional path to user data for server VM"
+  default = {}
+}
+
 
 # Networking
 
@@ -121,9 +127,10 @@ resource "incus_instance" "server" {
 		}
 	}
 
-	config = {
-		"cloud-init.network-config" = file("${path.module}/server/network.yaml")
-	}
+	config = merge(
+    var.server_config,
+    { "cloud-init.network-config" = file("${path.module}/server/network.yaml") }
+	)
 }
 
 resource "incus_instance" "client" {
