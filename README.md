@@ -20,7 +20,7 @@ The configuration has been tested with:
     This is a temporary workaround to [issues](https://discuss.linuxcontainers.org/t/loud-vms-stuck-in-continuous-boot-loop/27287) with the last Incus release.
 
     ```bash
-    cd genie-lab-incus
+    cd incubator
     mkdir images
     cd images
 
