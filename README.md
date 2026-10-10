@@ -1,7 +1,8 @@
 # Incubator
 
-This is a linux-specific setup for the lab
-using [Incus](https://linuxcontainers.org/incus/) as the VM manager
+This is a Linux-specific setup for doing network tests on a client-router-server
+architecture.
+Is uses [Incus](https://linuxcontainers.org/incus/) as the VM manager
 and [OpenTofu](https://opentofu.org/) for the VM setup.
 
 ### Prerequisites
