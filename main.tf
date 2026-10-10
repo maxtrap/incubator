@@ -128,6 +128,15 @@ resource "incus_instance" "client" {
 		}
 	}
 
+  dynamic "device" {
+    for_each = var.client_devices
+    content {
+      name = device.key
+      type = device.value.type
+      properties = device.value.properties
+    }
+  }
+
 	config = {
 		"cloud-init.network-config" = file("${path.module}/client/network.yaml")
 	}
