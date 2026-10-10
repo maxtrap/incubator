@@ -28,7 +28,7 @@ variable "image" {
 # Networking
 
 resource "incus_network" "net1" {
-	name = "${var.name}-labnet1"
+	name = "${var.name}-net1"
 	config = {
 		"ipv4.address" = "none"
 		"ipv6.address" = "none"
@@ -36,7 +36,7 @@ resource "incus_network" "net1" {
 }
 
 resource "incus_network" "net2" {
-	name = "${var.name}-labnet2"
+	name = "${var.name}-net2"
 	config = {
 		"ipv4.address" = "none"
 		"ipv6.address" = "none"
