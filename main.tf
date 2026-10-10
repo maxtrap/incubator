@@ -137,7 +137,8 @@ resource "incus_instance" "client" {
     }
   }
 
-	config = {
-		"cloud-init.network-config" = file("${path.module}/client/network.yaml")
-	}
+	config = merge(
+    var.client_config,
+    { "cloud-init.network-config" = file("${path.module}/client/network.yaml") }
+	)
 }

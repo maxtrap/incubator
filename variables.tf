@@ -19,6 +19,12 @@ variable "server_config" {
   default = {}
 }
 
+variable "client_config" {
+  type = map(string)
+  description = "Optional path to user data for client VM"
+  default = {}
+}
+
 variable "client_devices" {
   type = map(object({
     type = string
