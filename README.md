@@ -28,6 +28,10 @@ The configuration has been tested with:
     # You can also use curl -O instead of wget
     wget https://cloud-images.ubuntu.com/releases/resolute/release/ubuntu-26.04-server-cloudimg-amd64.img
     wget https://cloud-images.ubuntu.com/releases/resolute/release/ubuntu-26.04-server-cloudimg-amd64-lxd.tar.xz
+
+    # Import the image
+    incus image import images/ubuntu-26.04-server-cloudimg-amd64-lxd.tar.xz \
+        images/ubuntu-26.04-server-cloudimg-amd64.img --alias ubuntu-26.04-lab
     ```
 4. Start the VMs.
 

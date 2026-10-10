@@ -14,6 +14,16 @@ variable "name" {
 	description = "Lab name, used as a prefix for everything the lab creates"
 }
 
+variable "image" {
+  type = string
+  description = "Image alias or fingerprint to build the VMs from"
+
+
+  # Reinstate when resolved: https://discuss.linuxcontainers.org/t/loud-vms-stuck-in-continuous-boot-loop/27287
+  # default = "images:ubuntu/26.04/cloud"
+  default = "ubuntu-26.04-lab"
+}
+
 
 # Networking
 
@@ -31,27 +41,6 @@ resource "incus_network" "net2" {
 		"ipv4.address" = "none"
 		"ipv6.address" = "none"
 	}
-}
-
-
-# VM Image Declaration
-
-resource "incus_image" "ubuntu" {
-  # NOTE: incus's offical ubuntu cloud image gets stuck in a boot loop
-  # https://discuss.linuxcontainers.org/t/loud-vms-stuck-in-continuous-boot-loop/27287
-  # Restore this code once the problem is resolved
-  #
-	# source_image = {
-	# 	remote = "images"
-	# 	name = "ubuntu/26.04/cloud"
-	# 	type = "virtual-machine"
-	# }
-
-  # HACK: The temporary workaround
-  source_file = {
-    data_path = "${path.module}/images/ubuntu-26.04-server-cloudimg-amd64.img"
-    metadata_path = "${path.module}/images/ubuntu-26.04-server-cloudimg-amd64-lxd.tar.xz"
-  }
 }
 
 
@@ -76,7 +65,7 @@ resource "incus_profile" "lab" {
 
 resource "incus_instance" "router" {
 	name = "${var.name}-router"
-	image = incus_image.ubuntu.fingerprint
+	image = var.image
 	type = "virtual-machine"
   profiles = [incus_profile.lab.name]
 
@@ -118,7 +107,7 @@ resource "incus_instance" "router" {
 
 resource "incus_instance" "server" {
 	name = "${var.name}-server"
-	image = incus_image.ubuntu.fingerprint
+	image = var.image
 	type = "virtual-machine"
   profiles = [incus_profile.lab.name]
 
@@ -139,7 +128,7 @@ resource "incus_instance" "server" {
 
 resource "incus_instance" "client" {
 	name = "${var.name}-client"
-	image = incus_image.ubuntu.fingerprint
+	image = var.image
 	type = "virtual-machine"
   profiles = [incus_profile.lab.name]
 
