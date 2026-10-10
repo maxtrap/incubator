@@ -30,26 +30,29 @@ The configuration has been tested with:
     wget https://cloud-images.ubuntu.com/releases/resolute/release/ubuntu-26.04-server-cloudimg-amd64-lxd.tar.xz
 
     # Import the image
-    incus image import images/ubuntu-26.04-server-cloudimg-amd64-lxd.tar.xz \
-        images/ubuntu-26.04-server-cloudimg-amd64.img --alias ubuntu-26.04-lab
+    incus image import ubuntu-26.04-server-cloudimg-amd64-lxd.tar.xz \
+        ubuntu-26.04-server-cloudimg-amd64.img --alias ubuntu-26.04-lab
     ```
 4. Start the VMs.
 
     ```bash
     # Must be run at project root
     tofu init
-    tofu apply
+    tofu apply -var name=hello
     ```
+
+    Replace `hello` with your desired project name.
+    This name will be used as a prefix for everything the lab makes.
 
     The VMs should take about 30 seconds to boot.
     You can check on them with `incus console <name>`,
-    e.g. `incus console router`.
+    e.g. `incus console hello-router`.
     To see what VMs are running, run `incus list`.
 
 5. Enter the VM. Use `incus exec <name> -- bash`.
 
     ```bash
-    incus exec client -- bash
+    incus exec hello-client -- bash
     ```
 
     Now you can run `tracepath -n 192.168.101.2`
