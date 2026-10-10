@@ -49,7 +49,7 @@ The configuration has been tested with:
     e.g. `incus console hello-router`.
     To see what VMs are running, run `incus list`.
 
-5. Enter the VM. Use `incus exec <name> -- bash`.
+5. Enter a VM. Use `incus exec <name> -- bash`.
 
     ```bash
     incus exec hello-client -- bash
@@ -57,3 +57,13 @@ The configuration has been tested with:
 
     Now you can run `tracepath -n 192.168.101.2`
     to ensure the server and client can reach each other.
+
+6. Destroy the VMs. If you need to delete all the VMs, simply run:
+
+    ```bash
+    tofu destroy -var name=hello
+    ```
+
+    This will wipe all the VMs and networks.
+
+
