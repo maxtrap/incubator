@@ -1,4 +1,6 @@
 #cloud-config
+packages:
+  - nftables
 write_files:
   - path: /etc/sysctl.d/99-router.conf
     content: |
