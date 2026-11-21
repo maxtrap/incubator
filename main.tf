@@ -106,6 +106,15 @@ resource "incus_instance" "server" {
 		}
 	}
 
+  dynamic "device" {
+    for_each = var.server_devices
+    content {
+      name = device.key
+      type = device.value.type
+      properties = device.value.properties
+    }
+  }
+
 	config = merge(
     var.server_config,
     { "cloud-init.network-config" = file("${path.module}/server/network.yaml") }

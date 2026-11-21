@@ -22,6 +22,15 @@ variable "client_config" {
   default = {}
 }
 
+variable "server_devices" {
+  type = map(object({
+    type = string
+    properties = map(string)
+  }))
+  description = "Extra devices to attach to the server VM"
+  default = {}
+}
+
 variable "client_devices" {
   type = map(object({
     type = string
